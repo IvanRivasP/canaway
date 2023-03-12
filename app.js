@@ -108,7 +108,7 @@ app.post('/auth', async (req, res) => {
                 res.render('login', {
                     alert:true,
                     alertTitle: "Error",
-                    alertMessage: "Usuario y/o contraseña incorrectas",
+                    alertMessage: "Wrong credentials",
                     alertIcon: "error",
                     showConfirmButton: true,
                     timer: 100000,
@@ -131,8 +131,8 @@ app.post('/auth', async (req, res) => {
                     }
                     res.render('login', {
                         alert:true,
-                        alertTitle: "Conexión exitosa",
-                        alertMessage: "¡LOGIN CORRECTO!",
+                        alertTitle: "successful connection",
+                        alertMessage: "¡CORRECT LOGIN!",
                         alertIcon: "success", 
                         showConfirmButton: true,
                         timer: 1500,
