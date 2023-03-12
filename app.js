@@ -199,8 +199,8 @@ app.post('/challenge', async (req, res) => {
                     });
                     res.render('register', {
                         alert:true,
-                        alertTitle: "Operación exitosa",
-                        alertMessage: "El usuario fue creado exitosamente.",
+                        alertTitle: "Successful operation",
+                        alertMessage: "The user was created successfully.",
                         alertIcon: "success", 
                         showConfirmButton: true,
                         timer: 2000,
@@ -221,8 +221,8 @@ app.post('/challenge', async (req, res) => {
                 });
                 res.render('register', {
                     alert:true,
-                    alertTitle: "Operación exitosa",
-                    alertMessage: "¡Nivel de ingles actualizado correctamente!",
+                    alertTitle: "Successful operation",
+                    alertMessage: "¡English level updated correctly!",
                     alertIcon: "success", 
                     showConfirmButton: true,
                     timer: 2000,
