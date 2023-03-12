@@ -11,18 +11,17 @@ let transporter = nodemailer.createTransport({
 });
 const PORT = process.env.PORT || 3000;
 const environment = process.env.NODE_ENV || 'dev'
-/*
 const wp_auth = require('wp-auth').create({
-    wpurl: 'http://localhost/canaway',
+    wpurl: 'https://canaway-production.up.railway.app/',
     logged_in_key: '%Ng-P$S$Z$mY;KsIcxz#A:ovfa@Z?/R;xjk2sJ$ch[ZpCp)Ea1Fp?I= =JK2(}<<',
     logged_in_salt: '/rqi+n8~<5U/D_2m=Zf4UX@d6y#}e_e|WX~g@r%T`P6wGO$[-+DDBsP.gH$5oZBr',
-    mysql_host: 'localhost',
+    mysql_host: 'containers-us-west-179.railway.app',
     mysql_user: 'root',
-    mysql_pass: '',
-    mysql_port: '3306',
-    mysql_db: 'canaway',
+    mysql_pass: '6CGDC8LvKKOkPY8PsmTh',
+    mysql_port: '6875',
+    mysql_db: 'railway',
     wp_table_prefix: 'wp_' });
-*/
+
 //2. seteamos urlencoded para capturar datos del formulario
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -119,16 +118,6 @@ app.post('/auth', async (req, res) => {
                 req.session.loggedin = true;
                 req.session.id = results[0].ID;
                 req.session.name = results[0].user_login;
-                res.render('login', {
-                    alert:true,
-                    alertTitle: "Conexión exitosa",
-                    alertMessage: "¡LOGIN CORRECTO!",
-                    alertIcon: "success", 
-                    showConfirmButton: true,
-                    timer: 1500,
-                    ruta: 'admin'
-                });
-                /*
                 wp_auth.getUserMetas( results[0].ID, [ 'wp_capabilities', 'first_name', 'last_name' ], function( data ) {
                     var ruta = '';
                     if( typeof data !== 'undefined' ){
@@ -149,7 +138,7 @@ app.post('/auth', async (req, res) => {
                         timer: 1500,
                         ruta: ruta
                     });
-                } );*/
+                } );
             }
         });
     }
@@ -181,11 +170,11 @@ app.post('/challenge', async (req, res) => {
                 var sql = "INSERT INTO wp_users(user_login, user_pass, user_nicename, user_email) VALUES (?, ? ,? ,?)";
                 connection.query( sql, [user_login, hash, user_login, user_email], async ( err, rows ) => {
                     if (err) throw err;
-                    //wp_auth.setUserMeta( rows.insertId, 'nickname', first_name );
-                    //wp_auth.setUserMeta( rows.insertId, 'first_name', first_name );
-                    //wp_auth.setUserMeta( rows.insertId, 'last_name', '' );
+                    wp_auth.setUserMeta( rows.insertId, 'nickname', first_name );
+                    wp_auth.setUserMeta( rows.insertId, 'first_name', first_name );
+                    wp_auth.setUserMeta( rows.insertId, 'last_name', '' );
                     //wp_auth.setUserMeta( rows.insertId, 'wp_capabilities', '');
-                   // wp_auth.setUserMeta( rows.insertId, 'user_english_level', user_english_level );
+                    wp_auth.setUserMeta( rows.insertId, 'user_english_level', user_english_level );
                     /*
                     var sql = "INSERT INTO wp_usermeta(user_id, meta_key, meta_value) VALUES (?, ? ,?), (?, ? ,?)";
                     connection.query( sql, [user_login, 'hash', user_login, user_email], async ( err, rows ) => {
@@ -212,7 +201,7 @@ app.post('/challenge', async (req, res) => {
                     });
                 } );              
             }else{
-                //wp_auth.setUserMeta( results[0].ID, 'user_english_level', user_english_level );
+                wp_auth.setUserMeta( results[0].ID, 'user_english_level', user_english_level );
                 transporter.sendMail({
                     from: '"WordPress" <campusute.fii@unmsm.edu.pe>',
                     to: user_email,
