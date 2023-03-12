@@ -192,7 +192,7 @@ app.post('/challenge', async (req, res) => {
                         from: '"WordPress" <campusute.fii@unmsm.edu.pe>',
                         to: user_email,
                         subject: 'Challenge - Canaway Academy',
-                        text: 'Welcome! Your English level is: ' + user_english_level + '\n\nAccess your account here: http://localhost:3000/login and use these credentials:\n\nUsername: ' + user_login + '\nPassword: ' + password
+                        text: 'Welcome! Your English level is: ' + user_english_level + '\n\nAccess your account here: https://canaway-production.up.railway.app and use these credentials:\n\nUsername: ' + user_login + '\nPassword: ' + password
                     }, (err, info) => {
                         //console.log(info.envelope);
                         //console.log(info.messageId);
@@ -214,7 +214,7 @@ app.post('/challenge', async (req, res) => {
                     from: '"WordPress" <campusute.fii@unmsm.edu.pe>',
                     to: user_email,
                     subject: 'Challenge - Canaway Academy',
-                    text: 'Congratulations! Your English level is: ' + user_english_level + '\n\nAccess your account here: http://localhost:3000/login'
+                    text: 'Congratulations! Your English level is: ' + user_english_level + '\n\nAccess your account here: https://canaway-production.up.railway.app'
                 }, (err, info) => {
                     //console.log(info.envelope);
                     //console.log(info.messageId);
