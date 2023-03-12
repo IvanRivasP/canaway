@@ -1,4 +1,4 @@
-//1. invocamos express
+//1. invocamos express nodemailer y hash 
 const express = require('express');
 const app = express();
 const nodemailer = require('nodemailer');
@@ -9,6 +9,7 @@ let transporter = nodemailer.createTransport({
         pass: 'Campus3217t'
     }
 });
+const hasher = require('wordpress-hash-node');
 const PORT = process.env.PORT || 3000;
 const environment = process.env.NODE_ENV || 'dev'
 
@@ -92,7 +93,6 @@ app.post('/auth', async (req, res) => {
     const user = req.body.user;
     const pass = req.body.pass;
     if(user && pass) {
-        var hasher = require('wordpress-hash-node');
         connection.db.query('SELECT * FROM wp_users WHERE user_login = ?', [user], async (error, results) => {
             if( results.length == 0 || !(hasher.CheckPassword(pass, results[0].user_pass))){
                 res.render('login', {
@@ -244,16 +244,6 @@ app.post('/delete', async (req, res) => {
     }
 });
 
-/*
-const wordpress = require("wordpress");
-const client = wordpress.createClient({
-    url: "http://localhost/canaway"
-});
-client.getPosts(function( error, posts ) {
-	console.log( "Found " + posts.length + " posts!" );
-});
-console.log(wordpress);
-*/
 app.listen(PORT, (req, res) => {
-    console.log('Server running: http://localhost:3000' ); 
+    console.log('Server running: https://canaway-production.up.railway.app/' ); 
 });
