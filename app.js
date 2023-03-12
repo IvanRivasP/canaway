@@ -10,6 +10,7 @@ let transporter = nodemailer.createTransport({
     }
 });
 const PORT = process.env.PORT || 3000;
+const environment = process.env.NODE_ENV || 'dev'
 const wp_auth = require('wp-auth').create({
     wpurl: 'http://localhost/canaway',
     logged_in_key: '%Ng-P$S$Z$mY;KsIcxz#A:ovfa@Z?/R;xjk2sJ$ch[ZpCp)Ea1Fp?I= =JK2(}<<',
