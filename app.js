@@ -2,13 +2,6 @@
 const express = require('express');
 const app = express();
 const nodemailer = require('nodemailer');
-let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'campusute.fii@unmsm.edu.pe',
-        pass: 'Campus3217t'
-    }
-});
 const hasher = require('wordpress-hash-node');
 const PORT = process.env.PORT || 3000;
 const environment = process.env.NODE_ENV || 'dev'
@@ -39,9 +32,15 @@ app.use(session({
     saveUninitialized: true
 }));
 
-//8. Invocar conexion
+//8. Invocar conexion y mailer
 const connection = require('./database/db');
-
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.MAILER_USER,
+        pass: process.env.MAILER_PASSWORD
+    }
+});
 
 //9. estableciendo rutas
 app.get('/', (req, res) => {
