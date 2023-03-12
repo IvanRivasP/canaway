@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canaway Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="resources/css/style.css">
+</head>
+<body>
+    <section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-12 col-lg-12">
+					<div class="wrap d-md-flex">
+						<div class="img" style="background-image: url(resources/images/user-registration.png);background-size: 80%;background-color: #eeeeee;">
+			        </div>
+						<div class="login-wrap p-4 p-md-5"> 
+                            <div class="d-block m-0">
+                                <h2 class="m-0 text-uppercase">SALUDOS <%= name %></h2>
+                                <h5 class="m-0">Ingresa los parámetros indicados para ejecutar el proceso</h5>
+                                <p>Ten en cuenta lo siguiente:</p>
+                                <ol classs="m-0">
+                                    <li>Si el correo ya está registrado, se actualizará el nivel de inglés.</li>
+                                    <li>Si el correo no está registrado, se creará el nuevo usuario.></li>
+                                </ol>
+                            </div>
+							<form action="/challenge" method="post" class="signin-form">
+                                <div class="form-group mb-3">
+                                    <label class="label" for="first_name">Name</label>
+                                    <input name="first_name" type="text" class="form-control" placeholder="Username" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="label" for="user_email">Email</label>
+                                    <input name="user_email" type="email" class="form-control" placeholder="Email" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="label" for="user_english_level">English</label>
+                                    <select name="user_english_level" type="password" class="form-control" placeholder="Password" required>
+                                        <option disabled selected value="">Selecciona un valor</option>
+                                        <option>Básico</option>
+                                        <option>Intermedio</option>
+                                        <option>Avanzando</option>
+                                        <option>Experto</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="form-control btn btn-primary rounded submit px-3 mb-2" style="background-color:#DB1808!important">Execute</button>
+                                </div>
+                            </form>
+                            <form action="/exit" method="post" class="signin-form">
+                                <div class="form-group">
+                                    <button type="submit" class="form-control btn btn-primary rounded submit px-3" style="background-color:#908F88!important">Sign out</button>
+                                </div>
+                            </form>
+		                </div>
+		            </div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+	<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<% if(typeof alert != "undefined") { %>
+		<script>
+			Swal.fire({
+				title: '<%= alertTitle %>',
+				text: '<%= alertMessage %>',
+				icon: '<%= alertIcon %>',
+				showConfirmButton: '<%= showConfirmButton %>',
+				timer: '<%= timer %>'
+			}).then(()=>{
+				window.location = '/<%= ruta %>'
+			});
+		</script>
+	<% } %>
+</body>
+</html>
