@@ -173,7 +173,7 @@ app.post('/challenge', async (req, res) => {
                 let hours = date_time.getHours();
                 let minutes = date_time.getMinutes();
                 let seconds = date_time.getSeconds();
-                let user_registered = date + '-' + month + '-' + year + ' ' + hours + ':' + minutes + ':' + seconds;
+                let user_registered = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds;
 
                 var sql = "INSERT INTO wp_users(user_login, user_pass, user_nicename, user_email, user_registered) VALUES (?, ? ,? ,?, ?)";
                 connection.query( sql, [user_login, hash, user_login, user_email, user_registered], async ( err, rows ) => {
