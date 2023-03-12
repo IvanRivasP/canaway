@@ -53,6 +53,12 @@ app.use(session({
 //8. Invocar conexion
 const connection = require('./database/db');
 
+function getusers(){
+    connection.query('SELECT * FROM wp_users u INNER JOIN wp_usermeta d ON u.ID = d.user_id WHERE d.meta_key = "user_english_level"', null, async (error, rows) => {
+        return rows;
+    });
+    return false;
+}
 //9. estableciendo rutas
 app.get('/', (req, res) => {
     if(req.session.loggedin){
@@ -69,6 +75,7 @@ app.get('/admin', (req, res) => {
     if(req.session.loggedin){
         if(req.session.admin){
             connection.query('SELECT * FROM wp_users u INNER JOIN wp_usermeta d ON u.ID = d.user_id WHERE d.meta_key = "user_english_level"', null, async (error, rows) => {
+                req.session.users = rows
                 res.render('admin', {name: req.session.name, data: rows});
             });
         }else{
@@ -230,6 +237,27 @@ app.post('/challenge', async (req, res) => {
                     name: req.session.name
                 });
             }
+        });
+    }
+});
+
+//14. Delete
+app.post('/delete', async (req, res) => {
+    const ID = req.body.ID;
+    if(ID) {
+        var hasher = require('wordpress-hash-node');
+        connection.query('DELETE `wp_usermeta`, `wp_users` FROM `wp_usermeta` JOIN `wp_users` ON `wp_usermeta`.user_id = `wp_users`.ID WHERE `wp_usermeta`.user_id = ?', [ID], async (error, results) => {
+            res.render('admin', {
+                alert:true,
+                alertTitle: "Successful operation",
+                alertMessage: "The user was deleted successfully.",
+                alertIcon: "success", 
+                showConfirmButton: true,
+                timer: 2000,
+                ruta: 'admin',
+                name: req.session.name,
+                data: req.session.users
+            });
         });
     }
 });

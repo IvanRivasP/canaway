@@ -168,6 +168,7 @@
                                 <th>User</th>
                                 <th>Email</th>
                                 <th>English</th>
+                                <th>Action</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -177,6 +178,12 @@
                                         <td><%= user.user_login %></td>
                                         <td><%= user.user_email %></td>
                                         <td><%= user.meta_value %></td>
+                                        <td>
+                                          <form action="/delete" method="post" class="form-inline my-2 my-lg-0 ml-2">
+                                            <input value="<%= user.ID %>" name="ID" type="hidden" required/>
+                                            <button type="submit" class="form-control btn btn-primary rounded submit px-3" style="background-color:#DB1808!important;border: #db1808 !important;">Delete user</button>
+                                          </form>
+                                        </td>
                                     </tr>
                                  <% }); %> 
                               <tr>
@@ -221,6 +228,19 @@
         integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
-
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <% if(typeof alert != "undefined") { %>
+      <script>
+        Swal.fire({
+          title: '<%= alertTitle %>',
+          text: '<%= alertMessage %>',
+          icon: '<%= alertIcon %>',
+          showConfirmButton: '<%= showConfirmButton %>',
+          timer: '<%= timer %>'
+        }).then(()=>{
+          window.location = '/<%= ruta %>'
+        });
+      </script>
+    <% } %>
   </body>
 </html>
