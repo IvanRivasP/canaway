@@ -1,16 +1,11 @@
-const mysql = require('mysql');
-const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    port: process.env.DB_PORT,
-    database: process.env.DB_DATABASE
-});
+const mysql = require('mysql2');
+const connection = mysql.createConnection('mysql://root:6CGDC8LvKKOkPY8PsmTh@containers-us-west-179.railway.app:6875/railway');
 
 connection.connect((error)=>{
     if(error) {
         console.log(error);
+    }else{
+        console.log('Estas conectado');
     }
-    console.log('Estas conectado');
 });
 module.exports = connection;

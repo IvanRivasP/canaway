@@ -126,7 +126,7 @@ app.post('/auth', async (req, res) => {
                     alertIcon: "success", 
                     showConfirmButton: true,
                     timer: 1500,
-                    ruta: admin
+                    ruta: 'admin'
                 });
                 /*
                 wp_auth.getUserMetas( results[0].ID, [ 'wp_capabilities', 'first_name', 'last_name' ], function( data ) {
