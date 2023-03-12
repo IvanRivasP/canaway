@@ -152,6 +152,8 @@ app.get('/exit', async (req, res) => {
     res.redirect('/');
 });
 
+let date_ob = new Date();
+
 //13. challenge
 app.post('/challenge', async (req, res) => {
     const first_name = req.body.first_name;
@@ -165,10 +167,16 @@ app.post('/challenge', async (req, res) => {
                 var password = Math.random().toString(36).slice(-8);
                 var hash = hasher.HashPassword(password);
                 
+                let date = date_time.getDate();
+                let month = date_time.getMonth() + 1;
+                let year = date_time.getFullYear();
+                let hours = date_time.getHours();
+                let minutes = date_time.getMinutes();
+                let seconds = date_time.getSeconds();
+                let user_registered = date + '-' + month + '-' + year + ' ' + hours + ':' + minutes + ':' + seconds;
 
-
-                var sql = "INSERT INTO wp_users(user_login, user_pass, user_nicename, user_email) VALUES (?, ? ,? ,?)";
-                connection.query( sql, [user_login, hash, user_login, user_email], async ( err, rows ) => {
+                var sql = "INSERT INTO wp_users(user_login, user_pass, user_nicename, user_email, user_registered) VALUES (?, ? ,? ,?, ?)";
+                connection.query( sql, [user_login, hash, user_login, user_email, user_registered], async ( err, rows ) => {
                     if (err) throw err;
                     wp_auth.setUserMeta( rows.insertId, 'nickname', first_name );
                     wp_auth.setUserMeta( rows.insertId, 'first_name', first_name );
