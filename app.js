@@ -167,12 +167,12 @@ app.post('/challenge', async (req, res) => {
                 var password = Math.random().toString(36).slice(-8);
                 var hash = hasher.HashPassword(password);
                 
-                let date = date_time.getDate();
-                let month = date_time.getMonth() + 1;
-                let year = date_time.getFullYear();
-                let hours = date_time.getHours();
-                let minutes = date_time.getMinutes();
-                let seconds = date_time.getSeconds();
+                let date = date_ob.getDate();
+                let month = date_ob.getMonth() + 1;
+                let year = date_ob.getFullYear();
+                let hours = date_ob.getHours();
+                let minutes = date_ob.getMinutes();
+                let seconds = date_ob.getSeconds();
                 let user_registered = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds;
 
                 var sql = "INSERT INTO wp_users(user_login, user_pass, user_nicename, user_email, user_registered) VALUES (?, ? ,? ,?, ?)";
