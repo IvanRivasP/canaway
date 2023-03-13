@@ -32,6 +32,22 @@ app.use(session({
     saveUninitialized: true
 }));
 
+var request = require('request');
+
+/*
+request.post(
+    'http://localhost/canaway/wp-json/wp/v2/users',
+    { json: { username: 'eder.rivas', email: 'irivasp@unmsm.edu.pe', password: '12345678'} },
+    function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            console.log(body);
+        }
+    }
+);*/
+
+
+
+
 //8. Invocar conexion y mailer
 const connection = require('./database/db');
 let transporter = nodemailer.createTransport({
@@ -54,11 +70,22 @@ app.get('/', (req, res) => {
         res.render('login');
     }
 })
+
+
 app.get('/admin', (req, res) => {
     if(req.session.loggedin){
         if(req.session.admin){
-            connection.db.query('SELECT * FROM wp_users u INNER JOIN wp_usermeta d ON u.ID = d.user_id WHERE d.meta_key = "user_english_level"', null, async (error, rows) => {
-                req.session.users = rows
+            /*
+            request.get({
+                url: 'http://localhost/canaway/wp-json/wp/v2/users',
+                json: true
+              }, function(error, response, body){
+                req.session.users = body
+                res.render('admin', {name: req.session.name, data: body});
+              });
+            */
+            connection.db.query('SELECT u.`ID`, u.`user_login`, u.`user_email`, d.meta_value, ( SELECT meta_value FROM wp_usermeta WHERE user_id = d.user_id AND meta_key = "user_age"  ) AS "age" FROM wp_users u INNER JOIN wp_usermeta d ON u.ID = d.user_id WHERE d.meta_key = "user_english_level"', null, async (error, rows) => {
+                req.session.users = rows;
                 res.render('admin', {name: req.session.name, data: rows});
             });
         }else{
@@ -148,6 +175,7 @@ app.post('/challenge', async (req, res) => {
     const first_name = req.body.first_name;
     const user_email = req.body.user_email;
     const user_english_level = req.body.user_english_level;
+    const user_age = req.body.user_age;
     if(first_name && user_email && user_english_level) {
         var hasher = require('wordpress-hash-node');
         connection.db.query('SELECT * FROM wp_users WHERE user_email = ?', [user_email], async (error, results) => {
@@ -155,15 +183,43 @@ app.post('/challenge', async (req, res) => {
                 const user_login = user_email.substring(0, user_email.indexOf("@"));
                 var password = Math.random().toString(36).slice(-8);
                 var hash = hasher.HashPassword(password);
-                
+                /*
                 let date = date_ob.getDate();
                 let month = date_ob.getMonth() + 1;
                 let year = date_ob.getFullYear();
                 let hours = date_ob.getHours();
                 let minutes = date_ob.getMinutes();
                 let seconds = date_ob.getSeconds();
-                let user_registered = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds;
+                let user_registered = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds;*/
 
+                request.post({
+                    url: 'http://localhost/canaway/wp-json/wp/v2/users',
+                    body: { username: user_login, email: user_email, password: password, first_name: first_name, last_name: ''},
+                    json: true
+                  }, function(error, response, body){
+                    connection.wp_auth.setUserMeta( body.id, 'user_english_level', user_english_level );
+                    connection.wp_auth.setUserMeta( body.id, 'user_age', user_age );
+                    transporter.sendMail({
+                        from: '"WordPress" <campusute.fii@unmsm.edu.pe>',
+                        to: user_email,
+                        subject: 'Challenge - Canaway Academy',
+                        text: 'Welcome! Your English level is: ' + user_english_level + '\n\nAccess your account here: http://localhost/canaway/login and use these credentials:\n\nUsername: ' + user_login + '\nPassword: ' + password
+                    }, (err, info) => {
+                        //console.log(info.envelope);
+                        //console.log(info.messageId);
+                    });
+                    res.render('register', {
+                        alert:true,
+                        alertTitle: "Successful operation",
+                        alertMessage: "The user was created successfully.",
+                        alertIcon: "success", 
+                        showConfirmButton: true,
+                        timer: 2000,
+                        ruta: 'admin',
+                        name: req.session.name
+                    });
+                });
+                /*
                 var sql = "INSERT INTO wp_users(user_login, user_pass, user_nicename, user_email, user_registered) VALUES (?, ? ,? ,?, ?)";
                 connection.db.query( sql, [user_login, hash, user_login, user_email, user_registered], async ( err, rows ) => {
                     if (err) throw err;
@@ -176,7 +232,7 @@ app.post('/challenge', async (req, res) => {
                     var sql = "INSERT INTO wp_usermeta(user_id, meta_key, meta_value) VALUES (?, ? ,?), (?, ? ,?)";
                     connection.db.query( sql, [user_login, 'hash', user_login, user_email], async ( err, rows ) => {
                         if (err) throw err;
-                    } );*/
+                    } );
                     transporter.sendMail({
                         from: '"WordPress" <campusute.fii@unmsm.edu.pe>',
                         to: user_email,
@@ -196,14 +252,15 @@ app.post('/challenge', async (req, res) => {
                         ruta: 'admin',
                         name: req.session.name
                     });
-                } );              
+                } );   */           
             }else{
                 connection.wp_auth.setUserMeta( results[0].ID, 'user_english_level', user_english_level );
+                connection.wp_auth.setUserMeta( results[0].ID, 'user_age', user_age );
                 transporter.sendMail({
                     from: '"WordPress" <campusute.fii@unmsm.edu.pe>',
                     to: user_email,
                     subject: 'Challenge - Canaway Academy',
-                    text: 'Congratulations! Your English level is: ' + user_english_level + '\n\nAccess your account here: https://canaway-production.up.railway.app'
+                    text: 'Congratulations! Your English level is: ' + user_english_level + '\n\nAccess your account here: http://localhost/canaway/login'
                 }, (err, info) => {
                     //console.log(info.envelope);
                     //console.log(info.messageId);
@@ -227,6 +284,24 @@ app.post('/challenge', async (req, res) => {
 app.post('/delete', async (req, res) => {
     const ID = req.body.ID;
     if(ID) {
+        request.delete({
+            url: 'http://localhost/canaway/wp-json/wp/v2/users/' + ID,
+            body: { reassign: false, force: true },
+            json: true
+          }, function(error, response, body){
+            res.render('admin', {
+                alert:true,
+                alertTitle: "Successful operation",
+                alertMessage: "The user was deleted successfully.",
+                alertIcon: "success", 
+                showConfirmButton: true,
+                timer: 2000,
+                ruta: 'admin',
+                name: req.session.name,
+                data: req.session.users
+            });
+          });
+          /*
         connection.db.query('DELETE `wp_usermeta`, `wp_users` FROM `wp_usermeta` JOIN `wp_users` ON `wp_usermeta`.user_id = `wp_users`.ID WHERE `wp_usermeta`.user_id = ?', [ID], async (error, results) => {
             res.render('admin', {
                 alert:true,
@@ -239,10 +314,10 @@ app.post('/delete', async (req, res) => {
                 name: req.session.name,
                 data: req.session.users
             });
-        });
+        });*/
     }
 });
 
 app.listen(PORT, (req, res) => {
-    console.log('Server running: https://canaway-production.up.railway.app/' ); 
+    console.log('Server running: http://localhost:3000' ); 
 });

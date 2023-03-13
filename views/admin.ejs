@@ -168,6 +168,7 @@
                                 <th>User</th>
                                 <th>Email</th>
                                 <th>English</th>
+                                <th>Age</th>
                                 <th>Action</th>
                               </tr>
                             </thead>
@@ -178,6 +179,7 @@
                                         <td><%= user.user_login %></td>
                                         <td><%= user.user_email %></td>
                                         <td><%= user.meta_value %></td>
+                                        <td><%= user.age %></td>
                                         <td>
                                           <form action="/delete" method="post" class="form-inline my-2 my-lg-0 ml-2">
                                             <input value="<%= user.ID %>" name="ID" type="hidden" required/>
