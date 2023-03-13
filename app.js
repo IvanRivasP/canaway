@@ -72,8 +72,26 @@ app.get('/', (req, res) => {
 })
 
 
+async function getData(userid) {
+    var returnData = "";
+    return new Promise((resolve, reject) => {
+        connection.db.query('SELECT * FROM wp_usermeta WHERE user_id = ? AND meta_key = "user_age"', [userid], (err, rows2) => {
+            if (err) reject(err);
+            if(rows2.length == 0){
+                returnData = 'undefined';
+                resolve(returnData);
+            }else{
+                returnData =  rows2[0]['meta_value'];
+                resolve(returnData);
+            }
+        });
+    })
+}
+
+
+
 app.get('/admin', (req, res) => {
-    if(req.session.loggedin){
+    if(req.session.loggedin){ 
         if(req.session.admin){
             /*
             request.get({
@@ -84,7 +102,18 @@ app.get('/admin', (req, res) => {
                 res.render('admin', {name: req.session.name, data: body});
               });
             */
+            /*
             connection.db.query('SELECT u.`ID`, u.`user_login`, u.`user_email`, d.meta_value, ( SELECT meta_value FROM wp_usermeta WHERE user_id = d.user_id AND meta_key = "user_age"  ) AS "age" FROM wp_users u INNER JOIN wp_usermeta d ON u.ID = d.user_id WHERE d.meta_key = "user_english_level"', null, async (error, rows) => {
+                req.session.users = rows;
+                res.render('admin', {name: req.session.name, data: rows});
+            });
+        */
+            connection.db.query('SELECT * FROM wp_users u INNER JOIN wp_usermeta d ON u.ID = d.user_id WHERE d.meta_key = "user_english_level"', null, async (error, rows) => {
+                for await (const [index, value] of rows.entries()) {
+                    await getData(value.ID).then(function (returnData) {
+                        rows[index]['age'] = returnData;
+                    });
+                }
                 req.session.users = rows;
                 res.render('admin', {name: req.session.name, data: rows});
             });
